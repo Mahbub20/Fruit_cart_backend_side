@@ -1,5 +1,6 @@
 using fruit_cart_backend.Data;
 using fruit_cart_backend.Models;
+using fruit_cart_backend.Seeds;
 using fruit_cart_backend.Services.orders;
 using fruit_cart_backend.Services.payments;
 using fruit_cart_backend.Services.products;
@@ -53,5 +54,8 @@ app.UseCors("MyPolicy");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Seed the database
+DataSeeder.SeedData(app);
 
 app.Run();
