@@ -12,7 +12,7 @@ namespace fruit_cart_backend.Services.payments
         {
             var options = new Stripe.PaymentIntentCreateOptions
             {
-                Amount = (long)(reqDto.TotalAmount * 100), // Stripe expects the amount in cents
+                Amount = (long)(reqDto.PaymentAmount * 100), // Stripe expects the amount in cents
                 Currency = currency,
                 PaymentMethodTypes = new List<string> { "card" },
             };

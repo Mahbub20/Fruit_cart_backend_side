@@ -13,6 +13,7 @@ namespace fruit_cart_backend.Dtos
         public string UserEmail { get; set; }
         public List<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>(); 
         public decimal SubTotal { get; set; }   
-        public decimal TotalAmount { get; set; }  
+        public decimal TotalAmount { get; set; }
+        public decimal PaymentAmount { get; set; }
     }
 }

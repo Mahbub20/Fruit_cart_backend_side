@@ -1,5 +1,6 @@
 using fruit_cart_backend.Data;
 using fruit_cart_backend.Models;
+using fruit_cart_backend.Services.orders;
 using fruit_cart_backend.Services.payments;
 using fruit_cart_backend.Services.products;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IProductService, fruit_cart_backend.Services.products.ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddDbContext<EComDBContext>(options=>{
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

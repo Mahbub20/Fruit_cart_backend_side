@@ -72,7 +72,7 @@ namespace fruit_cart_backend.Controllers
                 OrderId = order.Id,
                 CustomerName = request.UserName,
                 CustomerEmail = request.UserEmail,
-                PaymentAmount = request.TotalAmount,
+                PaymentAmount = request.PaymentAmount,
                 PaymentStatus = "Completed",
                 StripeClientSecret = paymentClientSecret
             };
