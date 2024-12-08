@@ -20,17 +20,17 @@ namespace fruit_cart_backend.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<PaymentDetails> PaymentDetails { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {   
-            modelBuilder.Entity<OrderItem>()
-            .HasOne(oi=>oi.Order)
-            .WithMany(o=>o.OrderItems)
-            .HasForeignKey(oi=>oi.OrderId);
+        // protected override void OnModelCreating(ModelBuilder modelBuilder)
+        // {   
+        //     modelBuilder.Entity<OrderItem>()
+        //     .HasOne(oi=>oi.Order)
+        //     .WithMany(o=>o.OrderItems)
+        //     .HasForeignKey(oi=>oi.OrderId);
 
-            modelBuilder.Entity<OrderItem>()
-            .HasOne(oi=>oi.Product)
-            .WithMany(p=>p.OrderItems)
-            .HasForeignKey(oi=>oi.ProductId);
-        }
+        //     modelBuilder.Entity<OrderItem>()
+        //     .HasOne(oi=>oi.Product)
+        //     .WithMany(p=>p.OrderItems)
+        //     .HasForeignKey(oi=>oi.ProductId);
+        // }
     }
 }

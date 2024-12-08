@@ -17,7 +17,7 @@ namespace fruit_cart_backend.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
-        public Order Order { get; set; } = null!;
-        public Product Product { get; set; } = null!;
+        // public Order Order { get; set; } = null!;
+        // public Product Product { get; set; } = null!;
     }
 }

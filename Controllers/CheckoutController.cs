@@ -24,11 +24,71 @@ namespace fruit_cart_backend.Controllers
             _context = context;
             _paymentService = paymentService;
         }
+        // [HttpPost]
+        // [Route("process_order")]
+        // public async Task<IActionResult> ProcessOrder([FromBody] OrderRequestDto request)
+        // {
+
+        //     var productIds = request.OrderItems.Select(ci => ci.ProductId).ToList();
+        //     var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+
+        //     // Process payment using Stripe
+        //     var paymentClientSecret = await _paymentService.ProcessPaymentAsync(request);
+        //     if (paymentClientSecret == null)
+        //         return StatusCode(500, "Payment failed.");
+
+        //     // Create and save order
+        //     var order = new Order
+        //     {
+        //         SubTotal = request.SubTotal,
+        //         TotalAmount = request.TotalAmount,
+        //         // PaymentStatus = "Completed",
+        //         // PaymentIntentId = paymentClientSecret,
+        //         CreatedAt = DateTime.UtcNow,
+        //     };
+
+        //     foreach (var item in request.OrderItems)
+        //     {
+        //         order.OrderItems.Add(new OrderItem
+        //         {
+        //             ProductName = item.Name,
+        //             ProductId = item.ProductId,
+        //             Quantity = item.Quantity,
+        //             UnitPrice = products.First(p => p.Id == item.ProductId).Price,
+        //             TotalPrice = item.TotalPrice
+        //         });
+
+        //         // Update stock
+        //         // var product = products.First(p => p.ProductId == item.ProductId);
+        //         // product.Stock -= item.Quantity;
+        //     }
+
+        //     _context.Orders.Add(order);
+        //     await _context.SaveChangesAsync();
+
+        //     //Save payment details
+        //     var paymentDetails = new PaymentDetails
+        //     {
+        //         OrderId = order.Id,
+        //         CustomerName = request.UserName,
+        //         CustomerEmail = request.UserEmail,
+        //         PaymentAmount = request.PaymentAmount,
+        //         PaymentStatus = "Completed",
+        //         StripeClientSecret = paymentClientSecret
+        //     };
+
+        //     _context.PaymentDetails.Add(paymentDetails);
+        //     await _context.SaveChangesAsync();
+
+        //     return Ok(new { clientSecret = paymentClientSecret });
+        // }
+
+
         [HttpPost]
         [Route("process_order")]
         public async Task<IActionResult> ProcessOrder([FromBody] OrderRequestDto request)
         {
-
+            // Retrieve the products based on ProductIds
             var productIds = request.OrderItems.Select(ci => ci.ProductId).ToList();
             var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
 
@@ -37,51 +97,59 @@ namespace fruit_cart_backend.Controllers
             if (paymentClientSecret == null)
                 return StatusCode(500, "Payment failed.");
 
-            // Create and save order
-            var order = new Order
+            // Create and save the order first to get the OrderId
+            try
             {
-                SubTotal = request.SubTotal,
-                TotalAmount = request.TotalAmount,
-                // PaymentStatus = "Completed",
-                // PaymentIntentId = paymentClientSecret,
-                CreatedAt = DateTime.UtcNow,
-            };
-
-            foreach (var item in request.OrderItems)
-            {
-                order.OrderItems.Add(new OrderItem
+                // Save the order
+                var order = new Order
                 {
+                    SubTotal = request.SubTotal,
+                    TotalAmount = request.TotalAmount,
+                    CreatedAt = DateTime.UtcNow,
+                };
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                // Collect OrderItems
+                var savedOrderItems = request.OrderItems.Select(item => new OrderItem
+                {
+                    OrderId = order.Id,
                     ProductName = item.Name,
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     UnitPrice = products.First(p => p.Id == item.ProductId).Price,
                     TotalPrice = item.TotalPrice
-                });
+                }).ToList();
 
-                // Update stock
-                // var product = products.First(p => p.ProductId == item.ProductId);
-                // product.Stock -= item.Quantity;
+                // Save OrderItems
+                await _context.OrderItems.AddRangeAsync(savedOrderItems);
+                await _context.SaveChangesAsync();
+
+                // Save payment details
+                var paymentDetails = new PaymentDetails
+                {
+                    OrderId = order.Id,
+                    CustomerName = request.UserName,
+                    CustomerEmail = request.UserEmail,
+                    PaymentAmount = request.PaymentAmount,
+                    PaymentStatus = "Completed",
+                    StripeClientSecret = paymentClientSecret
+                };
+
+                _context.PaymentDetails.Add(paymentDetails);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { clientSecret = paymentClientSecret });
+            }
+            catch (Exception ex)
+            {
+                // Log and return error response
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-
-            //Save payment details
-            var paymentDetails = new PaymentDetails
-            {
-                OrderId = order.Id,
-                CustomerName = request.UserName,
-                CustomerEmail = request.UserEmail,
-                PaymentAmount = request.PaymentAmount,
-                PaymentStatus = "Completed",
-                StripeClientSecret = paymentClientSecret
-            };
-
-            _context.PaymentDetails.Add(paymentDetails);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { clientSecret = paymentClientSecret });
         }
+
 
     }
 }

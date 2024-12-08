@@ -16,7 +16,7 @@ namespace fruit_cart_backend.Models
         public int Stock { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        // public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public string Image { get; set; }
     }
 }

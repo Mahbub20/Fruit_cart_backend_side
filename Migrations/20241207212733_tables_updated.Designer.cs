@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fruit_cart_backend.Data;
 
@@ -11,9 +12,10 @@ using fruit_cart_backend.Data;
 namespace fruit_cart_backend.Migrations
 {
     [DbContext(typeof(EComDBContext))]
-    partial class EComDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241207212733_tables_updated")]
+    partial class tables_updated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -12,6 +12,6 @@ namespace fruit_cart_backend.Models
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdtedAt { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        // public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }
